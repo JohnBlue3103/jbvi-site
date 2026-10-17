@@ -247,6 +247,9 @@ pre { margin: 0; padding: 20px 22px; font-family: var(--code); font-size: .86rem
   .telephones { min-height: 360px; }
   .moi-portrait figcaption { right: 10px; }
   pre { font-size: .76rem; }
+  .flux { opacity: .35; }                      /* l'animation reste en fond, discrète */
+  .terminal pre { font-size: .62rem; padding: 16px 14px; }
+  .projet-edf .terminal, .hero-console { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

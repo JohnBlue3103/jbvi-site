@@ -65,10 +65,11 @@ document.getElementById('annee').textContent = new Date().getFullYear();
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
     }
     ctx.font = '11px "JetBrains Mono", monospace';
+    const petit = largeur < 700; // sur téléphone : pas de noms, ils passeraient sous le texte
     for (const n of noeuds) {
       ctx.fillStyle = '#ffffff'; ctx.strokeStyle = 'rgba(15,106,171,0.6)';
       ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = 'rgba(71,85,105,0.55)'; ctx.fillText(n.nom, n.x + 9, n.y + 4);
+      if (!petit) { ctx.fillStyle = 'rgba(71,85,105,0.55)'; ctx.fillText(n.nom, n.x + 9, n.y + 4); }
     }
     if (!calme) requestAnimationFrame(image);
   }
