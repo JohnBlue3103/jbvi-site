@@ -67,11 +67,14 @@ document.getElementById('annee').textContent = new Date().getFullYear();
   window.addEventListener('pointermove', (e) => { sx = e.clientX / innerWidth; sy = 1 - e.clientY / innerHeight; });
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+  // pendant le défilement, le drapé se fige : toute la puissance va au défilement
+  let defile = false, finDefile;
+  window.addEventListener('scroll', () => { defile = true; clearTimeout(finDefile); finDefile = setTimeout(() => { defile = false; }, 160); }, { passive: true });
   const debut = performance.now();
   let derniere = 0;
   function image(maintenant) {
     // 30 images par seconde suffisent pour un drapé lent, et laissent respirer le reste de la page
-    if (visible && maintenant - derniere > 33) {
+    if (visible && !defile && maintenant - derniere > 33) {
       derniere = maintenant;
       cx += (sx - cx) * 0.04; cy += (sy - cy) * 0.04;
       gl.uniform2f(uRes, canvas.width, canvas.height);
@@ -82,15 +85,6 @@ document.getElementById('annee').textContent = new Date().getFullYear();
     if (!calme) requestAnimationFrame(image);
   }
   requestAnimationFrame(image);
-})();
-
-// ── Heure de Toulouse dans l'en-tête ──
-(() => {
-  const el = document.getElementById('horloge');
-  if (!el) return;
-  const fmt = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit' });
-  const maj = () => { el.textContent = `TLS ${fmt.format(new Date())}`; };
-  maj(); setInterval(maj, 15000);
 })();
 
 // ── En-tête : fond flouté dès qu'on défile ──
@@ -156,10 +150,14 @@ form.addEventListener('submit', (e) => {
     c.classList.toggle('grand', !!projet && !champ);
     c.classList.toggle('focus', !!lien && !projet && !champ);
   });
+  let bouge = true;
+  window.addEventListener('pointermove', () => { bouge = true; }, { passive: true });
   const suivre = () => {
-    // P = 0.3 : rattrape la souris en douceur, comme le curseur de Metalab
-    cx += (x - cx) * (calme ? 1 : 0.3); cy += (y - cy) * (calme ? 1 : 0.3);
+    if (!bouge) { requestAnimationFrame(suivre); return; }
+    // 0.65 : suit la souris presque instantanément, avec juste un soupçon de douceur
+    cx += (x - cx) * (calme ? 1 : 0.65); cy += (y - cy) * (calme ? 1 : 0.65);
     c.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+    if (Math.abs(x - cx) < 0.3 && Math.abs(y - cy) < 0.3) bouge = false; // arrivé : on arrête de redessiner
     requestAnimationFrame(suivre);
   };
   requestAnimationFrame(suivre);
