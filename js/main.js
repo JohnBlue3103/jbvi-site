@@ -135,7 +135,8 @@ form.addEventListener('submit', (e) => {
   if (!window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 967px)').matches) return;
   const c = document.createElement('div');
   c.className = 'curseur-perso'; c.setAttribute('aria-hidden', 'true');
-  c.innerHTML = '<span>Voir</span>';
+  c.innerHTML = '<span></span>';
+  const etiquette = c.querySelector('span');
   document.body.appendChild(c);
   document.documentElement.classList.add('curseur-actif');
   let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
@@ -144,7 +145,8 @@ form.addEventListener('submit', (e) => {
   document.addEventListener('pointerover', (e) => {
     const cible = e.target;
     const champ = cible.closest('input, textarea, select');
-    const projet = cible.closest('.projet-visuel, .navigateur, .telephones');
+    const projet = cible.closest('[data-curseur]'); // seulement ce qui s'ouvre vraiment
+    if (projet) etiquette.textContent = projet.dataset.curseur;
     const lien = cible.closest('a, button, .service, .etapes li');
     c.classList.toggle('texte', !!champ);
     c.classList.toggle('grand', !!projet && !champ);
