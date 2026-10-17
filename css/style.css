@@ -241,3 +241,59 @@ a.navigateur { display: block; }
 .curseur-perso.grand { width: 110px; height: 110px; margin: -55px 0 0 -55px; background: var(--blanc); border-color: transparent; }
 .curseur-perso.grand span { opacity: 1; transform: none; }
 .curseur-perso.texte { opacity: 0; }
+
+/* ── Innovation : Maestro ────────────────────────────── */
+.innovation { position: relative; }
+.maestro { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(30px, 5vw, 80px); align-items: center; margin-bottom: 60px; }
+.maestro-chapo { font-size: 1.15rem; color: var(--blanc) !important; line-height: 1.55; }
+.maestro-pb { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 30px 0; }
+.maestro-pb h3 { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 12px; }
+.liste-croix, .liste-coche { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; color: var(--doux); font-size: .95rem; }
+.liste-croix li::before { content: "✕"; color: #F87171; margin-right: 10px; font-size: .8rem; }
+.liste-coche li::before { content: "✓"; color: #6EE7B7; margin-right: 10px; }
+
+.maestro-tel { justify-self: center; width: min(320px, 100%); aspect-ratio: 9 / 18.5; border-radius: 44px; padding: 12px;
+  background: linear-gradient(160deg, #2A2A36, #111118); box-shadow: 0 40px 90px rgba(0, 0, 0, .6), 0 0 120px rgba(139, 92, 246, .25); transform: rotate(3deg); }
+.tel-ecran { height: 100%; border-radius: 34px; overflow: hidden; padding: 20px 16px 16px; display: flex; flex-direction: column; gap: 9px;
+  background: radial-gradient(120% 60% at 50% 0%, #1F1650, #0B0B14 60%); font-size: .76rem; }
+.tel-haut { display: flex; justify-content: space-between; align-items: center; }
+.tel-haut b { font-family: var(--serif); font-weight: 400; font-size: 1.4rem; }
+.hors-ligne { font-size: .7rem; color: #6EE7B7; background: rgba(110, 231, 183, .12); padding: 3px 9px; border-radius: 999px; }
+.tel-titre { margin: 0; color: var(--doux); font-size: .78rem; }
+.tel-etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.tel-etapes li { padding: 7px 10px 7px 32px; border-radius: 12px; background: rgba(255, 255, 255, .05); position: relative; color: var(--doux); }
+.tel-etapes li::before { content: ""; position: absolute; left: 11px; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; border: 1.5px solid var(--doux-2); }
+.tel-etapes li.fait { color: var(--blanc); }
+.tel-etapes li.fait::before { background: #6EE7B7; border-color: #6EE7B7; }
+.tel-etapes li.encours { color: var(--blanc); background: rgba(139, 92, 246, .22); box-shadow: inset 0 0 0 1px rgba(139, 92, 246, .6); }
+.tel-etapes li.encours::before { border-color: var(--violet-clair); animation: pulse-etape 1.6s infinite; }
+@keyframes pulse-etape { 50% { box-shadow: 0 0 0 5px rgba(196, 181, 253, .18); } }
+.tel-bulle { padding: 8px 11px; border-radius: 14px; width: fit-content; max-width: 86%; line-height: 1.35; flex-shrink: 0; }
+.tel-bulle.question { align-self: flex-end; background: var(--bleu); color: #fff; border-bottom-right-radius: 4px; }
+.tel-bulle.reponse { background: rgba(255, 255, 255, .08); border-bottom-left-radius: 4px; }
+.tel-rapport { margin-top: auto; text-align: center; font-size: .72rem; color: var(--violet-clair); padding: 9px; border-radius: 12px; border: 1px dashed rgba(196, 181, 253, .4); }
+
+.benefices { list-style: none; margin: 0 0 60px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--ligne); border: 1px solid var(--ligne); border-radius: 22px; overflow: hidden; }
+.benefices li { background: var(--noir); padding: 26px 26px 28px; display: grid; gap: 6px; transition: background .3s; }
+.benefices li:hover { background: var(--noir-2); }
+.benefices b { font-family: var(--serif); font-weight: 400; font-size: 1.9rem; color: var(--blanc); }
+.benefices span { color: var(--doux); font-size: .95rem; }
+
+.maestro-bas { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(30px, 5vw, 80px); align-items: start; }
+.chiffres-maestro { display: grid; gap: 22px; }
+.chiffres-maestro b { display: block; font-family: var(--serif); font-weight: 400; font-size: clamp(3rem, 2rem + 3vw, 4.6rem); line-height: 1; color: var(--violet-clair); }
+.chiffres-maestro span { color: var(--doux); }
+.note-chiffres { font-size: .8rem; color: var(--doux-2) !important; margin: 0; }
+.maestro-cas h3 { font-family: var(--serif); font-size: 2rem; margin: 0 0 12px; }
+.maestro-cas h3:not(:first-child) { margin-top: 30px; }
+.maestro-cas .puces { margin-bottom: 22px; }
+.maestro-eco { font-size: .92rem; border-left: 2px solid #6EE7B7; padding-left: 14px; }
+
+@media (max-width: 1100px) {
+  .maestro, .maestro-bas { grid-template-columns: 1fr; }
+  .benefices { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 760px) {
+  .maestro-pb, .benefices { grid-template-columns: 1fr; }
+  .maestro-tel { transform: none; width: min(290px, 100%); }
+}
