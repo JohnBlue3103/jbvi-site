@@ -8,6 +8,10 @@ Site statique (HTML / CSS / JS, sans build) de JBCI, développeur freelance à T
 - `js/main.js` : matière liquide du hero (WebGL, bleu du logo + violet), heure de Toulouse, apparition au défilement, formulaire
 - `assets/` : logo (`logo-blanc.png` pour le fond noir, `logo-source.png` original), `favicon.svg`, `og.jpg` (aperçu de partage), `john.webp`, captures des projets dans `projets/`
 
+## Référencement
+
+`node outils/seo.js` écrit le titre, la description, l’adresse canonique, les aperçus de partage, les données structurées (entreprise, personne, services, réalisations, FAQ), `sitemap.xml` et `robots.txt`. Le domaine est la constante `DOMAINE` en tête du script (provisoire : https://www.jbci-dev.fr) : la changer puis relancer le script.
+
 ## À compléter avant la mise en ligne
 
 - l'adresse e-mail qui reçoit le formulaire : `ADRESSE_CODEE` dans `js/main.js` (codée, jamais en clair ; la commande pour la générer est en commentaire) ;
