@@ -60,13 +60,13 @@ document.getElementById('annee').textContent = new Date().getFullYear();
       const a = noeuds[p.de], b = noeuds[p.vers];
       const x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
       const g = ctx.createRadialGradient(x, y, 0, x, y, 14);
-      g.addColorStop(0, p.menthe ? 'rgba(255,122,92,0.85)' : 'rgba(43,142,160,0.85)');
+      g.addColorStop(0, p.menthe ? 'rgba(124,58,237,0.8)' : 'rgba(15,106,171,0.85)');
       g.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
     }
     ctx.font = '11px "JetBrains Mono", monospace';
     for (const n of noeuds) {
-      ctx.fillStyle = '#ffffff'; ctx.strokeStyle = 'rgba(43,142,160,0.6)';
+      ctx.fillStyle = '#ffffff'; ctx.strokeStyle = 'rgba(15,106,171,0.6)';
       ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.fillStyle = 'rgba(71,85,105,0.55)'; ctx.fillText(n.nom, n.x + 9, n.y + 4);
     }
