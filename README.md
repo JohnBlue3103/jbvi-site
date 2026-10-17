@@ -10,7 +10,7 @@ Site statique (HTML / CSS / JS, sans build) de JBCI, développeur freelance à T
 
 ## Référencement
 
-`node outils/seo.js` écrit le titre, la description, l’adresse canonique, les aperçus de partage, les données structurées (entreprise, personne, services, réalisations, FAQ), `sitemap.xml` et `robots.txt`. Le domaine est la constante `DOMAINE` en tête du script (provisoire : https://www.jbci-dev.fr) : la changer puis relancer le script.
+`node outils/seo.js` écrit le titre, la description, l’adresse canonique, les aperçus de partage, les données structurées (entreprise, personne, services, réalisations, FAQ), `sitemap.xml` et `robots.txt`. Le domaine est la constante `DOMAINE` en tête du script (https://www.jbci-informatique.fr) : la changer puis relancer le script.
 
 ## À compléter avant la mise en ligne
 

@@ -3,8 +3,8 @@
 //
 //   node outils/seo.js                       régénère tout avec le domaine ci-dessous
 //
-// ⚠ Domaine provisoire : à remplacer par le vrai nom de domaine, puis relancer le script.
-const DOMAINE = 'https://www.jbci-dev.fr';
+// Nom de domaine du site (commandé le 17/10/2026). En cas de changement : modifier ici puis relancer le script.
+const DOMAINE = 'https://www.jbci-informatique.fr';
 
 const fs = require('fs');
 const path = require('path');
