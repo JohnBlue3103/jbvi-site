@@ -13,12 +13,12 @@ const AUJOURDHUI = new Date().toISOString().slice(0, 10);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 const TITRE = 'JBCI – Développeur full-stack & Scrum Master à Toulouse';
-const DESCRIPTION = 'Développeur freelance à Toulouse : applications web et mobiles, micro-services, données, Spring Boot, Angular. Accéléré par l’IA, code relu et testé.';
+const DESCRIPTION = 'Développeur freelance à Toulouse : digitalisation de vos process, applications web et mobiles, micro-services, données. Accéléré par l’IA, code relu.';
 const IMAGE = `${DOMAINE}/assets/og.jpg`;
 
 const COMPETENCES = ['Java', 'Spring Boot', 'Spring Batch', 'Scala', 'SQL', 'Oracle', 'Angular', 'JavaScript', 'React Native',
   'Micro-services', 'DevOps', 'Docker', 'Intelligence artificielle', 'Développement assisté par l’IA', 'Scrum', 'Méthodes agiles',
-  'Applications mobiles iOS et Android', 'Sites internet', 'Référencement naturel'];
+  'Applications mobiles iOS et Android', 'Sites internet', 'Référencement naturel', 'Digitalisation des processus', 'Automatisation', 'Outils métier sur mesure'];
 
 // Questions / réponses de la FAQ visible (section #faq) → FAQPage
 function faqDe(html) {
@@ -43,8 +43,7 @@ function jsonld(html) {
     areaServed: [{ '@type': 'City', name: 'Toulouse' }, { '@type': 'AdministrativeArea', name: 'Occitanie' }, { '@type': 'Country', name: 'France' }],
     knowsAbout: COMPETENCES,
     hasOfferCatalog: { '@type': 'OfferCatalog', name: 'Services', itemListElement: [
-      'Développement accéléré par l’IA', 'Données et intégration', 'Back-end, API et micro-services', 'Applications web et outils métier',
-      'Applications mobiles', 'Sites internet et référencement', 'Pilotage agile et Scrum',
+      'Développement accéléré par l’IA', 'Digitalisation des process', 'Données et intégration', 'Back-end, API et micro-services', 'Applications mobiles', 'Sites internet et référencement', 'Pilotage agile et Scrum',
     ].map((n) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: n, areaServed: 'France' } })) },
   };
   const site = { '@type': 'WebSite', '@id': `${DOMAINE}/#site`, url: `${DOMAINE}/`, name: 'JBCI', inLanguage: 'fr-FR', publisher: { '@id': `${DOMAINE}/#jbci` } };
