@@ -43,11 +43,11 @@ p { margin: 0 0 1em; color: var(--doux); }
 .marque { justify-self: start; }
 .marque img { height: 20px; width: auto; }
 .nav { display: flex; gap: 6px; justify-self: center; }
-.nav a { text-decoration: none; font-size: .85rem; font-weight: 500; padding: 6px 14px; border-radius: 999px; background: var(--pastille); backdrop-filter: blur(10px); transition: background .2s; }
+.nav a { text-decoration: none; font-size: .85rem; font-weight: 500; padding: 6px 14px; border-radius: 999px; background: rgba(24, 24, 34, .78); transition: background .2s; }
 .nav a:hover { background: rgba(255, 255, 255, .2); }
 .entete-droite { justify-self: end; display: flex; align-items: center; gap: 14px; font-size: .85rem; font-weight: 500; }
 .horloge { font-variant-numeric: tabular-nums; }
-.pastille-contact { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--pastille); backdrop-filter: blur(10px); transition: background .2s; }
+.pastille-contact { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: rgba(24, 24, 34, .78); transition: background .2s; }
 .pastille-contact:hover { background: var(--violet); }
 
 /* ── Hero ────────────────────────────────────────────── */
@@ -58,7 +58,7 @@ p { margin: 0 0 1em; color: var(--doux); }
 
 .hero-projets { position: absolute; left: var(--marge); top: 50%; transform: translateY(-50%); list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; justify-items: start; }
 .hero-projets a { display: inline-block; text-decoration: none; font-size: .95rem; font-weight: 500; padding: 5px 16px; border-radius: 999px;
-  background: rgba(30, 30, 40, .55); backdrop-filter: blur(12px); transition: background .2s, transform .2s; }
+  background: rgba(24, 24, 34, .78); transition: background .2s, transform .2s; }
 .hero-projets a:hover { background: var(--blanc); color: var(--noir); transform: translateX(4px); }
 
 .hero-intro { position: absolute; right: clamp(16px, 22vw, 340px); top: 24%; width: min(300px, 70vw); color: var(--blanc); font-size: 1rem; line-height: 1.45; margin: 0; }
@@ -88,11 +88,11 @@ pre { margin: 0; padding: 20px 22px; font-family: var(--code); font-size: .84rem
 
 /* ── Bandeau défilant ────────────────────────────────── */
 .bandeau { overflow: hidden; border-block: 1px solid var(--ligne); }
-.bandeau-piste { display: flex; gap: 34px; width: max-content; padding: 22px 0; animation: defile 46s linear infinite;
+.bandeau-piste { display: flex; gap: 34px; width: max-content; padding: 22px 0; animation: defile 46s linear infinite; will-change: transform; backface-visibility: hidden;
   font-family: var(--serif); font-size: 1.7rem; white-space: nowrap; color: var(--doux); }
 .bandeau b { font-weight: 400; color: var(--blanc); }
 .bandeau .sep { color: var(--violet); font-size: 1rem; align-self: center; }
-@keyframes defile { to { transform: translateX(-50%); } }
+@keyframes defile { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
 
 /* ── Sections ────────────────────────────────────────── */
 .section { padding: clamp(90px, 12vw, 160px) var(--marge); max-width: 1360px; margin: 0 auto; }
@@ -119,6 +119,9 @@ pre { margin: 0; padding: 20px 22px; font-family: var(--code); font-size: .84rem
 .projet:nth-of-type(even) .projet-visuel { order: -1; }
 .projet-client { font-size: .85rem; font-weight: 500; color: var(--doux) !important; margin-bottom: 18px; }
 .projet-client::before { content: "● "; color: var(--violet); }
+.projet-client-logo { display: flex; align-items: center; gap: 8px; }
+.projet-client-logo::before { content: none; }
+.projet-client-logo img { height: 18px; width: auto; }
 .projet h3, .projet-petit h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.2rem, 1.3rem + 2.6vw, 3.8rem); line-height: 1; margin-bottom: 22px; }
 .projet .puces { margin: 24px 0; }
 .lien { display: inline-flex; gap: 8px; text-decoration: none; font-size: .9rem; font-weight: 500; padding: 9px 18px; border-radius: 999px; background: var(--pastille); transition: background .2s; }
@@ -154,7 +157,7 @@ pre { margin: 0; padding: 20px 22px; font-family: var(--code); font-size: .84rem
 .moi { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(40px, 6vw, 100px); align-items: center; }
 .moi-portrait { margin: 0; position: relative; }
 .moi-portrait img { border-radius: 28px; }
-.moi-portrait figcaption { position: absolute; left: 18px; bottom: 18px; font-size: .85rem; font-weight: 500; padding: 7px 14px; border-radius: 999px; background: rgba(5, 5, 10, .6); backdrop-filter: blur(10px); }
+.moi-portrait figcaption { position: absolute; left: 18px; bottom: 18px; font-size: .85rem; font-weight: 500; padding: 7px 14px; border-radius: 999px; background: rgba(5, 5, 10, .75); }
 .moi-texte .sur { padding-top: 0; margin-bottom: 18px; }
 .moi-texte h2 { margin-bottom: 30px; }
 .moi-signe { display: inline-block; font-size: .9rem; font-weight: 500; color: var(--blanc) !important; padding: 8px 16px; border-radius: 999px; background: var(--pastille); }
@@ -218,3 +221,24 @@ pre { margin: 0; padding: 20px 22px; font-family: var(--code); font-size: .84rem
   .bandeau-piste { animation: none; }
   .js .apparait { opacity: 1; transform: none; transition: none; }
 }
+
+/* ── Curseur personnalisé (ordinateur seulement), comme sur metalab.com ── */
+@media (hover: hover) and (pointer: fine) and (min-width: 967px) {
+  html.curseur-actif, html.curseur-actif * { cursor: none !important; }
+  html.curseur-actif input, html.curseur-actif textarea, html.curseur-actif select { cursor: text !important; }
+}
+.curseur-perso {
+  position: fixed; top: 0; left: 0; z-index: 300; pointer-events: none;
+  width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%;
+  background: var(--blanc); border: 1.5px solid transparent; opacity: 0;
+  display: grid; place-items: center; color: var(--noir); font: 500 .85rem var(--sans); letter-spacing: -.01em;
+  transition: width .3s cubic-bezier(.22, 1, .36, 1), height .3s cubic-bezier(.22, 1, .36, 1), margin .3s cubic-bezier(.22, 1, .36, 1),
+              background .2s, border-color .2s, opacity .2s;
+  will-change: transform;
+}
+.curseur-perso span { opacity: 0; transform: scale(.6); transition: opacity .2s, transform .3s cubic-bezier(.22, 1, .36, 1); white-space: nowrap; }
+.curseur-perso.visible { opacity: 1; }
+.curseur-perso.focus { width: 34px; height: 34px; margin: -17px 0 0 -17px; background: rgba(139, 92, 246, .22); border-color: var(--violet); }
+.curseur-perso.grand { width: 96px; height: 96px; margin: -48px 0 0 -48px; background: var(--blanc); border-color: transparent; }
+.curseur-perso.grand span { opacity: 1; transform: none; }
+.curseur-perso.texte { opacity: 0; }

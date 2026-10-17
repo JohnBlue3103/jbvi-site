@@ -22,7 +22,7 @@ document.getElementById('annee').textContent = new Date().getFullYear();
     float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float bruit(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f*f*(3.0-2.0*f);
       return mix(mix(hash(i), hash(i+vec2(1,0)), u.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), u.x), u.y); }
-    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int k = 0; k < 4; k++){ v += a * bruit(p); p *= 2.02; a *= 0.5; } return v; }
+    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int k = 0; k < 3; k++){ v += a * bruit(p); p *= 2.02; a *= 0.5; } return v; }
     float champ(vec2 p){
       vec2 q = vec2(fbm(p + vec2(0.0, t*0.05)), fbm(p + vec2(5.2, 1.3) - t*0.04));
       vec2 r = vec2(fbm(p + 2.0*q + vec2(1.7, 9.2) + t*0.03), fbm(p + 2.0*q + vec2(8.3, 2.8)));
@@ -60,7 +60,7 @@ document.getElementById('annee').textContent = new Date().getFullYear();
   const uRes = gl.getUniformLocation(prog, 'res'), uT = gl.getUniformLocation(prog, 't'), uS = gl.getUniformLocation(prog, 'souris');
 
   // rendu à résolution réduite : fluide même sur un téléphone, flou naturel du drapé
-  const ECHELLE = 0.5;
+  const ECHELLE = 0.33;
   function taille() { canvas.width = Math.round(canvas.clientWidth * ECHELLE); canvas.height = Math.round(canvas.clientHeight * ECHELLE); gl.viewport(0, 0, canvas.width, canvas.height); }
   taille(); window.addEventListener('resize', taille);
   let sx = 0.5, sy = 0.5, cx = 0.5, cy = 0.5;
@@ -68,8 +68,11 @@ document.getElementById('annee').textContent = new Date().getFullYear();
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
   const debut = performance.now();
+  let derniere = 0;
   function image(maintenant) {
-    if (visible) {
+    // 30 images par seconde suffisent pour un drapé lent, et laissent respirer le reste de la page
+    if (visible && maintenant - derniere > 33) {
+      derniere = maintenant;
       cx += (sx - cx) * 0.04; cy += (sy - cy) * 0.04;
       gl.uniform2f(uRes, canvas.width, canvas.height);
       gl.uniform1f(uT, calme ? 8.0 : (maintenant - debut) / 1000);
@@ -131,3 +134,33 @@ form.addEventListener('submit', (e) => {
   location.href = `mailto:${adresse()}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
   note.textContent = 'Votre messagerie s’ouvre avec votre message.';
 });
+
+// ── Curseur personnalisé (ordinateur seulement) : petit rond qui suit la souris avec un léger retard,
+//    grossit avec un anneau violet sur les liens et boutons, devient un disque « Voir » sur les projets ──
+(() => {
+  if (!window.matchMedia('(hover: hover) and (pointer: fine) and (min-width: 967px)').matches) return;
+  const c = document.createElement('div');
+  c.className = 'curseur-perso'; c.setAttribute('aria-hidden', 'true');
+  c.innerHTML = '<span>Voir</span>';
+  document.body.appendChild(c);
+  document.documentElement.classList.add('curseur-actif');
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
+  window.addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; c.classList.add('visible'); }, { passive: true });
+  document.addEventListener('pointerleave', () => c.classList.remove('visible'));
+  document.addEventListener('pointerover', (e) => {
+    const cible = e.target;
+    const champ = cible.closest('input, textarea, select');
+    const projet = cible.closest('.projet-visuel, .navigateur, .telephones');
+    const lien = cible.closest('a, button, .service, .etapes li');
+    c.classList.toggle('texte', !!champ);
+    c.classList.toggle('grand', !!projet && !champ);
+    c.classList.toggle('focus', !!lien && !projet && !champ);
+  });
+  const suivre = () => {
+    // P = 0.3 : rattrape la souris en douceur, comme le curseur de Metalab
+    cx += (x - cx) * (calme ? 1 : 0.3); cy += (y - cy) * (calme ? 1 : 0.3);
+    c.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+    requestAnimationFrame(suivre);
+  };
+  requestAnimationFrame(suivre);
+})();
