@@ -4,9 +4,9 @@ Site statique (HTML / CSS / JS, sans build) de JBCI, développeur freelance à T
 
 - `index.html` : accueil (une page) — hero animé, services, réalisations, méthode, qui suis-je, contact
 - `mentions-legales.html`
-- `css/style.css` : style clair dans l’esprit d’Explogo (bleu canard #2B8EA0, corail #FF7A5C, jaune #FFD24A, bleu nuit #13233A)
-- `js/main.js` : animation des flux du hero, apparition au défilement, formulaire
-- `assets/` : logo (`logo.png` recoloré bleu nuit + bleu canard, `logo-source.png` original), `favicon.svg`, `og.jpg` (aperçu de partage), `john.webp`, captures des projets dans `projets/`
+- `css/style.css` : style « studio » inspiré de metalab.com : noir profond, titres Instrument Serif, interface Inter, pastilles
+- `js/main.js` : matière liquide du hero (WebGL, bleu du logo + violet), heure de Toulouse, apparition au défilement, formulaire
+- `assets/` : logo (`logo-blanc.png` pour le fond noir, `logo-source.png` original), `favicon.svg`, `og.jpg` (aperçu de partage), `john.webp`, captures des projets dans `projets/`
 
 ## À compléter avant la mise en ligne
 

@@ -8,75 +8,93 @@ const calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.getElementById('annee').textContent = new Date().getFullYear();
 
-// ── Flux de données du hero : des services reliés, des paquets qui circulent ──
+// ── Matière liquide du hero (WebGL) : un drapé brillant qui ondule, bleu du logo + violet ──
 (() => {
-  const canvas = document.getElementById('flux');
+  const canvas = document.getElementById('liquide');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const NOMS = ['api', 'reco-client', 'batch', 'mobile', 'web', 'oracle', 'paiement', 'mail', 'carte', 'auth', 'stats', 'back-office'];
-  let largeur, hauteur, noeuds = [], liens = [], paquets = [], ratio;
+  const gl = canvas.getContext('webgl', { antialias: false, premultipliedAlpha: false });
+  if (!gl) return; // sans WebGL, le dégradé CSS du hero reste en fond
 
-  function preparer() {
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
-    largeur = canvas.clientWidth; hauteur = canvas.clientHeight;
-    canvas.width = largeur * ratio; canvas.height = hauteur * ratio;
-    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    const n = largeur < 700 ? 7 : 12;
-    noeuds = Array.from({ length: n }, (_, i) => ({
-      // sur grand écran, les services restent à droite pour ne pas passer derrière le titre
-      x: largeur * (largeur > 1000 ? 0.5 + 0.46 * Math.random() : 0.08 + 0.84 * Math.random()), y: hauteur * (0.12 + 0.76 * Math.random()),
-      vx: (Math.random() - 0.5) * 0.12, vy: (Math.random() - 0.5) * 0.12, nom: NOMS[i % NOMS.length],
-    }));
-    liens = [];
-    noeuds.forEach((a, i) => {
-      const proches = noeuds.map((b, j) => ({ j, d: Math.hypot(a.x - b.x, a.y - b.y) })).filter((o) => o.j !== i)
-        .sort((p, q) => p.d - q.d).slice(0, 2);
-      proches.forEach(({ j }) => { if (!liens.some(([p, q]) => (p === i && q === j) || (p === j && q === i))) liens.push([i, j]); });
-    });
-    paquets = [];
-  }
+  const VS = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
+  const FS = `
+    precision highp float;
+    uniform vec2 res; uniform float t; uniform vec2 souris;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float bruit(vec2 p){ vec2 i = floor(p), f = fract(p); vec2 u = f*f*(3.0-2.0*f);
+      return mix(mix(hash(i), hash(i+vec2(1,0)), u.x), mix(hash(i+vec2(0,1)), hash(i+vec2(1,1)), u.x), u.y); }
+    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int k = 0; k < 4; k++){ v += a * bruit(p); p *= 2.02; a *= 0.5; } return v; }
+    float champ(vec2 p){
+      vec2 q = vec2(fbm(p + vec2(0.0, t*0.05)), fbm(p + vec2(5.2, 1.3) - t*0.04));
+      vec2 r = vec2(fbm(p + 2.0*q + vec2(1.7, 9.2) + t*0.03), fbm(p + 2.0*q + vec2(8.3, 2.8)));
+      return fbm(p + 2.2*r);
+    }
+    void main(){
+      vec2 uv = (gl_FragCoord.xy - 0.5*res) / min(res.x, res.y);
+      uv += (souris - 0.5) * 0.08;
+      vec2 p = uv * 0.85;
+      float e = 0.012;
+      float h = champ(p);
+      // normale du « drapé » pour un reflet brillant
+      vec2 g = vec2(champ(p + vec2(e, 0.0)) - h, champ(p + vec2(0.0, e)) - h) / e;
+      vec3 n = normalize(vec3(-g * 0.9, 1.0));
+      vec3 l = normalize(vec3(0.5, 0.6, 0.9));
+      float diff = max(dot(n, l), 0.0);
+      float spec = pow(max(dot(reflect(-l, n), vec3(0.0, 0.0, 1.0)), 0.0), 18.0);
+      vec3 noir = vec3(0.02, 0.02, 0.05);
+      vec3 violet = vec3(0.35, 0.20, 0.85);
+      vec3 bleu = vec3(0.12, 0.38, 0.92);
+      vec3 base = mix(noir, mix(violet, bleu, smoothstep(0.3, 0.8, h)), smoothstep(0.35, 0.95, h) * 0.9);
+      vec3 c = base * (0.25 + 0.9 * diff) + spec * vec3(0.85, 0.82, 1.0) * smoothstep(0.4, 0.9, h);
+      float vignette = smoothstep(1.25, 0.25, length(uv));
+      gl_FragColor = vec4(c * vignette, 1.0);
+    }`;
+  const shader = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+  const prog = gl.createProgram();
+  gl.attachShader(prog, shader(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FS));
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  gl.useProgram(prog);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const uRes = gl.getUniformLocation(prog, 'res'), uT = gl.getUniformLocation(prog, 't'), uS = gl.getUniformLocation(prog, 'souris');
 
-  function image() {
-    ctx.clearRect(0, 0, largeur, hauteur);
-    for (const n of noeuds) {
-      if (!calme) { n.x += n.vx; n.y += n.vy; }
-      if (n.x < 30 || n.x > largeur - 30) n.vx *= -1;
-      if (n.y < 30 || n.y > hauteur - 30) n.vy *= -1;
-    }
-    ctx.lineWidth = 1;
-    for (const [i, j] of liens) {
-      const a = noeuds[i], b = noeuds[j];
-      ctx.strokeStyle = 'rgba(15,23,42,0.08)';
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-    }
-    if (!calme && Math.random() < 0.08 && liens.length) {
-      const [i, j] = liens[Math.floor(Math.random() * liens.length)];
-      paquets.push({ de: Math.random() < 0.5 ? i : j, vers: 0, t: 0, v: 0.004 + Math.random() * 0.006, menthe: Math.random() < 0.35 });
-      const p = paquets[paquets.length - 1]; p.vers = p.de === i ? j : i;
-    }
-    paquets = paquets.filter((p) => p.t < 1);
-    for (const p of paquets) {
-      p.t += p.v;
-      const a = noeuds[p.de], b = noeuds[p.vers];
-      const x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
-      const g = ctx.createRadialGradient(x, y, 0, x, y, 14);
-      g.addColorStop(0, p.menthe ? 'rgba(124,58,237,0.8)' : 'rgba(15,106,171,0.85)');
-      g.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 14, 0, Math.PI * 2); ctx.fill();
-    }
-    ctx.font = '11px "JetBrains Mono", monospace';
-    const petit = largeur < 700; // sur téléphone : pas de noms, ils passeraient sous le texte
-    for (const n of noeuds) {
-      ctx.fillStyle = '#ffffff'; ctx.strokeStyle = 'rgba(15,106,171,0.6)';
-      ctx.beginPath(); ctx.arc(n.x, n.y, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      if (!petit) { ctx.fillStyle = 'rgba(71,85,105,0.55)'; ctx.fillText(n.nom, n.x + 9, n.y + 4); }
+  // rendu à résolution réduite : fluide même sur un téléphone, flou naturel du drapé
+  const ECHELLE = 0.5;
+  function taille() { canvas.width = Math.round(canvas.clientWidth * ECHELLE); canvas.height = Math.round(canvas.clientHeight * ECHELLE); gl.viewport(0, 0, canvas.width, canvas.height); }
+  taille(); window.addEventListener('resize', taille);
+  let sx = 0.5, sy = 0.5, cx = 0.5, cy = 0.5;
+  window.addEventListener('pointermove', (e) => { sx = e.clientX / innerWidth; sy = 1 - e.clientY / innerHeight; });
+  let visible = true;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
+  const debut = performance.now();
+  function image(maintenant) {
+    if (visible) {
+      cx += (sx - cx) * 0.04; cy += (sy - cy) * 0.04;
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform1f(uT, calme ? 8.0 : (maintenant - debut) / 1000);
+      gl.uniform2f(uS, cx, cy);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     if (!calme) requestAnimationFrame(image);
   }
+  requestAnimationFrame(image);
+})();
 
-  preparer(); image();
-  let attente;
-  window.addEventListener('resize', () => { clearTimeout(attente); attente = setTimeout(() => { preparer(); if (calme) image(); }, 200); });
+// ── Heure de Toulouse dans l'en-tête ──
+(() => {
+  const el = document.getElementById('horloge');
+  if (!el) return;
+  const fmt = new Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit' });
+  const maj = () => { el.textContent = `TLS ${fmt.format(new Date())}`; };
+  maj(); setInterval(maj, 15000);
+})();
+
+// ── En-tête : fond flouté dès qu'on défile ──
+(() => {
+  const entete = document.querySelector('.entete');
+  const maj = () => entete.classList.toggle('defile', window.scrollY > 40);
+  maj(); window.addEventListener('scroll', maj, { passive: true });
 })();
 
 // ── Lueur qui suit la souris sur les services ──
