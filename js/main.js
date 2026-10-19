@@ -2,7 +2,7 @@
 
 // Adresse qui reçoit les demandes : jamais écrite en clair (robots). Laisser vide tant qu'elle n'est pas choisie.
 // Pour la générer : node -e 'console.log(JSON.stringify([..."adresse@exemple.fr"].map(c=>c.charCodeAt(0)+7).reverse()))'
-const ADRESSE_CODEE = [];
+const ADRESSE_CODEE = [121,109,53,108,124,120,112,123,104,116,121,118,109,117,112,52,112,106,105,113,71,123,106,104,123,117,118,106];
 const adresse = () => ADRESSE_CODEE.slice().reverse().map((n) => String.fromCharCode(n - 7)).join('');
 const calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -114,12 +114,17 @@ if ('IntersectionObserver' in window) {
 }
 
 // ── Formulaire : ouvre la messagerie avec le message rédigé ──
+// Anti-robots : champ piège invisible, délai minimum, interaction humaine réelle (souris, clavier ou
+// doigt), adresse jamais écrite en clair et reconstituée seulement au moment de l'envoi.
 const chargeLe = Date.now();
+let humain = false;
+['pointerdown', 'keydown', 'touchstart'].forEach((ev) => window.addEventListener(ev, () => { humain = true; }, { once: true, passive: true }));
 const form = document.getElementById('form-contact');
 form.addEventListener('submit', (e) => {
   e.preventDefault();
   const note = document.getElementById('note-form');
-  if (form.site_web.value || Date.now() - chargeLe < 3000) return; // robot
+  if (form.site_web.value || Date.now() - chargeLe < 3000 || !humain) return; // robot
+  if (/https?:\/\/|www\./i.test(form.nom.value)) { form.nom.focus(); return; } // liens dans le nom : typique des spams
   if (!form.email.value.trim() || !form.email.checkValidity()) { form.email.focus(); form.email.reportValidity(); return; }
   if (!form.message.value.trim()) { form.message.focus(); form.message.reportValidity(); return; }
   if (!ADRESSE_CODEE.length) { note.textContent = 'Le formulaire n’est pas encore relié à une adresse e-mail.'; return; }
